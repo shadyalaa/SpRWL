@@ -47,7 +47,7 @@ bash run-XXX.sh PATH_TO_ROOT_DIRECTORY RESULTS_DIRECTORY RUN_DESCRIPTIONG_MESSAG
 **usage:**
 
 To compile a benchmark, go to its folder under the benchmarks folder and use the "build-XXX.sh" script.
- 
+
 These scripts expect the following parameters (*in this order*):
 
 1. the backend name, corresponding to the folder under "backends"
@@ -64,5 +64,31 @@ Hence, a common usage shall be:
 bash build-XXX.sh 10.1-RHTMO 10 0
 bash build-XXX.sh herwl 10 0 5
 bash build-XXX.sh brlock
+```
+
+To run the hashmap:
+```
+./hashmap 
+-u: percentage of update operations 
+-i: initial size of the no. of items in the hashmap 
+-b: no. of buckets
+-r: range of values to use 
+-d: total no. of operations
+-m: no. of lookups within each read-only opeations 
+-n: no. of threads
+```
+
+To run TPC-C:
+```
+./tpcc 
+-t: run durations in seconds
+-w: no. of warehouses 
+-m: max. no. of warehouses
+-s: percentage of stock level transactions
+-d: percentage of delivery transactions
+-o: percentage of order status transactions
+-p: percentage of payment transactions
+-r: percentage of new order transactions
+-n: no. of threads
 ```
 
