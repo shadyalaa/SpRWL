@@ -1,0 +1,7 @@
+.idea
+*.tar.gz
+Plot*
+total
+*.o
+*.a
+**/*.o
