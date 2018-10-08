@@ -33,11 +33,22 @@ This source code has three directories:
 * run-rhtmsnzi-comp.sh: runs the experiment for readers' tracking schemes (Sec 4.1.2)
 * run-tpcc.sh: runs the experiements for TPC-C (Sec 4.2)
 
+All these scripts expect the following parameters (*in this order*):
+1. path to root directory of this repository
+2. path to results directory
+3. message to describe this run, printed in a *desc.txt* in the results directory
+4. *random* or *no_random* to decide whether to create a random directory within the input results directory or use it as it is.
+
+Hence, to run any of these scripts use the following command:
+```
+bash run-XXX.sh PATH_TO_ROOT_DIRECTORY RESULTS_DIRECTORY RUN_DESCRIPTIONG_MESSAGE [random/no_random]
+```
+
 **usage:**
 
 To compile a benchmark, go to its folder under the benchmarks folder and use the "build-XXX.sh" script.
  
-These scripts expect the following parameters (in this order):
+These scripts expect the following parameters (*in this order*):
 
 1. the backend name, corresponding to the folder under "backends"
 2. the number of retries for HTM usage
