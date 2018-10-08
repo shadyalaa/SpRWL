@@ -1,5 +1,5 @@
 CC       := g++
-CFLAGS   += -std=c++11 -I../../../rapl-power/ -g -w -pthread -mrtm -fpermissive
+CFLAGS   += -std=c++11 -g -w -pthread -mrtm -fpermissive
 CFLAGS   += -O2
 CFLAGS   += -I$(LIB)
 CPP      := g++

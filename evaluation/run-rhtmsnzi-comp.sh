@@ -16,31 +16,13 @@ fi
 
 echo 'ls'
 
-backends[1]="1.0-htm-sgl"       #does not use alpha
-backends[2]="2.0-NoWait"        #does not use alpha
-backends[3]="brlock"            #does not use alpha
-backends[4]="rwl"               #does not use alpha
-backends[5]="herwl"
-backends[10]="10.1-RHTMO"
-backends[11]="10.2-RHTMS"
+backends[1]="10.1-RHTMO"
+backends[2]="10.2-RHTMS"
 
-benchmarks[1]="hm-u0"
-benchmarks[2]="hm-u10"
-benchmarks[3]="hm-u50"
+benchmarks[1]="hm-u50"
 
+params[1]="-u50 -i300000 -b5000 -r300000 -d1000000 -m"
 
-
-params[1]="-u0 -i100000 -b5000 -r100000 -d1000000 -m"
-params[2]="-u10 -i100000 -b5000 -r100000 -d1000000 -m"
-params[3]="-u50 -i100000 -b5000 -r100000 -d1000000 -m"
-
-
-
-benchmarks[4]="hm10k-u0"
-benchmarks[5]="hm10k-u10"
-
-params[4]="-u0 -i10000 -b5000 -r10000 -d5000000 -m"
-params[5]="-u10 -i10000 -b5000 -r10000 -d5000000 -m"
 
 
 wait_until_finish() {
@@ -61,23 +43,12 @@ wait_until_finish() {
 
 htm_retries=10
 retry_policy=0
-rot_retry=5
-thread_counts=( 8 14 28 56)
 attempts=(1 2 3 4 5)
 
-#for b is the benchmarks, for c backends
-if [ $4 != "no_random" ];then
-echo "common policies: " >> $resultsdir/desc.txt
-echo "retries used: "$htm_retries >> $resultsdir/desc.txt
-echo "retry policies used: "$retry_policy >> $resultsdir/desc.txt
-echo "threads tested: "$thread_counts >> $resultsdir/desc.txt
-echo "attempts: "${#alphas[@]} >> $resultsdir/desc.txt
-echo "benchmarks parameters:"	>> $resultsdir/desc.txt
-fi
 
 #for b is the benchmarks, for c backends
 cd $1/benchmarks/datastructures
-for c in 10 11 #1 2 3 4 11 12 13
+for c in 1 2
 do	
 	echo "testing "${backends[$c]} >> $resultsdir/desc.txt
 	for h in $htm_retries
@@ -85,9 +56,9 @@ do
 		for r in $retry_policy
 		do
 			bash build-datastructures.sh ${backends[$c]} $h $r
-			for b in 1 2 3
+			for b in 1 
 			do
-				for n in 10 80
+				for n in 80
 				do
 					for m in 1 2 5 10 50 100 500 1000 10000
 					do

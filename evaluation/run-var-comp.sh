@@ -14,35 +14,27 @@ mkdir $resultsdir/summary
 echo $3 > $resultsdir/desc.txt
 fi
 
-backends[1]="10.02-RHTMNW"
-backends[2]="10.04-RHTMRW"
-backends[3]="10.05-RHTMRS"
-backends[4]="10.1-RHTMO"
+
+if cat /proc/cpuinfo | grep -q "Intel"; then
+  thread_counts=( 1 2 4 8 14 28 42 56)
+  whouses="-w 56 -m 56"
+  items="800000"
+else
+  thread_counts=( 1 2 4 8 16 32 64 80)
+  whouses="-w 80 -m 80"
+  items="300000"
+fi
+attempts=(1 2 3 4 5)
+
+backends[1]="10.02-RHTMNW" # NoSched
+backends[2]="10.04-RHTMRW" # RWait
+backends[3]="10.05-RHTMRS" # RSync
+backends[4]="10.1-RHTMO" #Sprwl
 
 
 benchmarks[1]="reader-ll-x10-u10"
 
-params[1]="-u10 -i300000 -b5000 -r300000 -d100000 -m10 -a"
-
-#params[6]="-u0 -i300000 -b5000 -r300000 -d100000 -m10 -a"
-#params[7]="-u10 -i300000 -b5000 -r300000 -d100000 -m10 -a"
-#params[8]="-u50 -i300000 -b5000 -r300000 -d100000 -m10 -a"
-#params[9]="-u90 -i300000 -b5000 -r300000 -d100000 -m10 -a"
-#params[10]="-u100 -i300000 -b5000 -r300000 -d100000 -m10 -a"
-
-#params[11]="-u0 -b15 -i2400 -r2400 -d100000 -m1 -a"
-#params[12]="-u10 -b15 -i2400 -r2400 -d100000 -m1 -a"
-#params[13]="-u50 -b15 -i2400 -r2400 -d100000 -m1 -a"
-#params[14]="-u90 -b15 -i2400 -r2400 -d100000 -m1 -a"
-#params[15]="-u100 -b15 -i2400 -r2400 -d100000 -m1 -a"
-
-#params[16]="-u0 -b15 -i2400 -r2400 -d100000 -m10 -a"
-#params[17]="-u10 -b15 -i2400 -r2400 -d100000 -m10 -a"
-#params[18]="-u50 -b15 -i2400 -r2400 -d100000 -m10 -a"
-#params[19]="-u90 -b15 -i2400 -r2400 -d100000 -m10 -a"
-#params[20]="-u100 -b15 -i2400 -r2400 -d100000 -m10 -a"
-
-
+params[1]="-u10 -i$items -b5000 -r$items -d100000 -m10 -a"
 
 
 wait_until_finish() {
@@ -63,21 +55,6 @@ wait_until_finish() {
 
 htm_retries=10
 retry_policy=0
-rot_retry=5
-attempts=(1 2 3 4 5)
-
-#for b is the benchmarks, for c backends
-if [ $4 != "no_random" ];then
-echo "common policies: " >> $resultsdir/desc.txt
-echo "retries used: "$htm_retries >> $resultsdir/desc.txt
-echo "retry policies used: "$retry_policy >> $resultsdir/desc.txt
-echo "attempts: "${#alphas[@]} >> $resultsdir/desc.txt
-echo "benchmarks parameters:"	>> $resultsdir/desc.txt
-for b in 1
-do
-	echo ${benchmarks[$b]} "=" ${params[$b]} >> $resultsdir/desc.txt
-done
-fi
 
 #for b is the benchmarks, for c backends
 cd $1/benchmarks/datastructures
@@ -91,23 +68,24 @@ do
 			bash build-datastructures.sh ${backends[$c]} $h $r
 			for b in 1
 			do
-				for n in 1 2 4 8 16 32 64 80
-				do
-					for a in {1..5}
-					do
-		    				echo "${benchmarks[$b]} | ${backends[$c]}-$h-$r | threads $n| attempt $a"
-			    			./hashmap/hashmap ${params[$b]} 1 -n $n > $runsdir/${benchmarks[$b]}-${backends[$c]}-$h-$r-$n-$a.data 2> $runsdir/${benchmarks[$b]}-${backends[$c]}-$h-$r-$n-$a.err &
-				    		pid3=$!
-							wait_until_finish $pid3
-							wait $pid3
-	    					rc=$?
-				    		if [[ $rc != 0 ]] ; then
-    							echo "Error within: | ${benchmarks[$b]} | ${backends[$c]}-$h-$r | attempt $a" >> $runsdir/error.out
-				    		fi
+				for n in "${thread_counts[@]}"
+        do
+        	for a in "${attempts[@]}"
+          do
+						echo "${benchmarks[$b]} | ${backends[$c]}-$h-$r | threads $n| attempt $a"
+			    	./hashmap/hashmap ${params[$b]} 1 -n $n > $runsdir/${benchmarks[$b]}-${backends[$c]}-$h-$r-$n-$a.data 2> $runsdir/${benchmarks[$b]}-${backends[$c]}-$h-$r-$n-$a.err &
+				    pid3=$!
+						wait_until_finish $pid3
+						wait $pid3
+	    			rc=$?
+				    if [[ $rc != 0 ]] ; then
+    					echo "Error within: | ${benchmarks[$b]} | ${backends[$c]}-$h-$r | attempt $a" >> $runsdir/error.out
+				    fi
 					done
 				done
 			done
 		done
 	done
 done
+
 exit 0

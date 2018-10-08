@@ -1,5 +1,5 @@
 CFLAGS   += -w $(HTM_RETRIES) $(RETRY_POLICY) $(ROT_RETRIES)
 
 CPPFLAGS := $(CFLAGS)
-LIBS     += $(CPPFLAGS) -I/home/shady/lib/boost/include -L/home/shady/lib -ltcmalloc -lrt -lpthread -mcpu=power8 -mtune=power8 -L/home/shady/lib/boost/lib -lboost_system -lm
+LIBS     += $(CPPFLAGS) -ltcmalloc -lrt -lpthread -mcpu=power8 -mtune=power8 -lboost_system -lm
 LDFLAGS  += $(LIBS)
