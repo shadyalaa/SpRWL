@@ -1,0 +1,9 @@
+hashmap/hashmap
+Makefile
+Makefile.flags
+lib/thread.*
+lib/tm.h
+lib/spec.h
+Defines.common.mk
+linkedlist/linkedlist
+hashmap/Makefile*

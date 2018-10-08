@@ -1,0 +1,5 @@
+*.o
+thread.*
+tm.h
+tpcc
+spec.h

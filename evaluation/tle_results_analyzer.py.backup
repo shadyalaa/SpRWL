@@ -1,0 +1,144 @@
+import sys,os
+import numpy 
+
+avail_threads = [1,4,8,16,32,64,80]
+
+run_name = sys.argv[1]
+outputs_folder = sys.argv[2]
+
+files = [os.path.join(outputs_folder,f) for f in os.listdir(outputs_folder) if f.startswith(run_name+"-") and f.endswith("data") and len(f.split(run_name)[1].split("-"))==3 and f.split(run_name)[1].split("-")[0]==""]
+
+runs = {}
+for f in files:
+	try:
+		threads = int(os.path.basename(f).split(run_name)[1].split("-")[1])
+	except:
+		sys.stderr.write(f+"\n")
+		continue
+	if threads not in runs:
+		runs[threads] = {"time":[],"commits":[],"aborts":[],"tle_commits":[],"gl_commits":[],"conflicts":[],"self":[],"trans":[],"nontrans":[],"user":[],"capacity":[],"persistent":[],"other":[]}
+	fn = f
+	f = open(f)
+	time = -1
+	commits = -1
+	aborts = -1
+	tle_commits = -1
+	gl_commits = -1
+	conflicts = -1
+	self = -1
+	user = -1
+	capacity = -1
+	trans = -1
+	nontrans = -1
+	persistent = -1
+	other = -1
+	for line in f:
+		line = line.strip().lower()
+		if "time" in line:
+			time = float(line.split(" ")[-1])
+		elif "total commits" in line:
+			commits = float(line.split(" ")[-1])
+		elif "total aborts" in line:
+			aborts = float(line.split(" ")[-1])
+		elif "tle commits" in line:
+			tle_commits = float(line.split(" ")[-1])
+		elif "conflicts" in line:
+			conflicts = float(line.split(" ")[-1])
+		elif "user aborts" in line:
+			_user = float(line.split(" ")[-1])
+		elif "self aborts" in line:
+			self = float(line.split(" ")[-1])
+		elif "capacity aborts" in line:
+			capacity = float(line.split(" ")[-1])
+		elif "persistent aborts" in line:
+			persistent = float(line.split(" ")[-1])
+		elif "trans aborts" in line:
+			trans = float(line.split(" ")[-1])
+		elif "non-trans aborts" in line:
+			nontrans = float(line.split(" ")[-1])
+		#elif "other aborts" in line:
+		#	other = float(line.split(" ")[-1])
+		elif "gl commits" in line:
+			gl_commits = float(line.split(" ")[-1])
+		
+	f.close()
+	if time == -1:
+		continue
+	else:
+		runs[threads]["time"].append(time)
+		runs[threads]["commits"].append(commits)
+		runs[threads]["tle_commits"].append(tle_commits)
+		runs[threads]["gl_commits"].append(gl_commits)
+		runs[threads]["aborts"].append(aborts)
+		runs[threads]["conflicts"].append(conflicts)
+		runs[threads]["self"].append(self)
+		runs[threads]["user"].append(user)
+		runs[threads]["capacity"].append(capacity)
+		runs[threads]["trans"].append(trans)
+		runs[threads]["nontrans"].append(nontrans)
+		runs[threads]["persistent"].append(persistent)
+		runs[threads]["other"].append(other)
+	
+
+print "threads\ttime\ttime_std\tcommits_avg\tcommits_std\ttle_commits_avg\ttle_commits_std\tgl_commits_avg\tgl_commits_std\taborts_avg\taborts_std\tconflicts_avg\tconflicts_std\tself_avg\tself_std\ttrans_avg\ttrans_std\tnontrans_avg\tnontrans_std\tuser_avg\tuser_std\tcapacity_avg\tcapacity_std\tpersistent_avg\tpersistent_std\tother_avg\tother_std"
+for k in avail_threads:
+	out = str(k)
+	if k not in runs:
+		print str(k)+"\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0"
+		continue
+	v = runs[k]
+	time_avg = numpy.average(v["time"])
+	time_std =  numpy.std(v["time"])
+	if time_std/time_avg * 100 > 10:
+		sys.stderr.write(str(k) + ", time, " + str(time_std/time_avg) + "\n")
+	out += "\t"+str(time_avg)
+        out += "\t"+str(time_std)
+        avg = numpy.average(v["commits"])
+        std =  numpy.std(v["commits"])
+        out += "\t"+str(avg)
+        out += "\t"+str(std)
+        avg = numpy.average(v["tle_commits"])
+        std =  numpy.std(v["tle_commits"])
+        out += "\t"+str(avg)
+        out += "\t"+str(std)
+        avg = numpy.average(v["gl_commits"])
+        std =  numpy.std(v["gl_commits"])
+        out += "\t"+str(avg)
+        out += "\t"+str(std)
+        avg = numpy.average(v["aborts"])
+        std =  numpy.std(v["aborts"])
+        out += "\t"+str(avg)
+        out += "\t"+str(std)
+	avg = numpy.average(v["conflicts"])
+        std =  numpy.std(v["conflicts"])
+        out += "\t"+str(avg)
+        out += "\t"+str(std)
+        avg = numpy.average(v["self"])
+        std =  numpy.std(v["self"])
+        out += "\t"+str(avg)
+        out += "\t"+str(std)
+        avg = numpy.average(v["trans"])
+        std =  numpy.std(v["trans"])
+        out += "\t"+str(avg)
+        out += "\t"+str(std)
+        avg = numpy.average(v["nontrans"])
+        std =  numpy.std(v["nontrans"])
+        out += "\t"+str(avg)
+        out += "\t"+str(std)
+        avg = numpy.average(v["user"])
+        std =  numpy.std(v["user"])
+        out += "\t"+str(avg)
+        out += "\t"+str(std)
+        avg = numpy.average(v["capacity"])
+        std =  numpy.std(v["capacity"])
+        out += "\t"+str(avg)
+        out += "\t"+str(std)
+        avg = numpy.average(v["persistent"])
+        std =  numpy.std(v["persistent"])
+        out += "\t"+str(avg)
+        out += "\t"+str(std)
+        avg = numpy.average(v["other"])
+        std =  numpy.std(v["other"])
+        out += "\t"+str(avg)
+        out += "\t"+str(std)
+	print out.replace("nan","0")

@@ -1,0 +1,5 @@
+CFLAGS   += -w $(HTM_RETRIES) $(RETRY_POLICY) $(TSTATS)
+
+CPPFLAGS := $(CFLAGS)
+LIBS     += $(CPPFLAGS) -I../lib/ -lrt -lpthread -mrtm -lm -ltcmalloc -lboost_system
+LDFLAGS  += $(LIBS)
