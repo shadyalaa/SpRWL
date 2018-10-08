@@ -3,6 +3,7 @@
 **Requirements:**
 
 * Install: [tcmalloc](http://goog-perftools.sourceforge.net/doc/tcmalloc.html) (needed for all backends) and [boost](https://www.boost.org/) (needed for TPC-C).
+
 *for local installations add the paths to make files: backends/common/Makefile_XXX.flags and backends/common/Defines_XXX.common.mk, where XXX is either Intel or PPC*
 
 This source code has three directories: 
