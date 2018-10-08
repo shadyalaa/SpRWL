@@ -5,10 +5,10 @@
 * Install: tcmalloc (needed for all backends)
 
 
-This source code has two directories: 
+This source code has three directories: 
 1. *backends*: impelementation of different synchronization techniques and 
 2. *benchmarks*: the benchmarks used in the experiments of the paper.
-3. *evaluation*, scripts used to launch experiments of the paper.
+3. *evaluation*: scripts used to launch experiments of the paper.
 
 
 **backends:**
@@ -25,17 +25,17 @@ This source code has two directories:
 
 * 10.2-RHTMS: SPRWL with SNZI used for readers' indicator (SNZI)
 
-* herwl: Implemenetation of Hardware Read-Write Lock Elision
+* herwl: Implemenetation of Hardware Read-Write Lock Elision (RW-LE)
 
-* rwl: read-write lock of pthreads
+* rwl: read-write lock of pthreads (RWL)
 
-* brlock: Implementation of Big Reader-Writer Lock
+* brlock: Implementation of Big Reader-Writer Lock (BRLock)
 
 
 
 **benchmarks:**
 
-* datastructures: Concurrent hash map
+* datastructures: Concurrent hash map used as a synthetic benchmark
 
 * tpcc: in-memory port of TPC-C
 
