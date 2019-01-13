@@ -25,8 +25,8 @@ typedef struct spec_rwlock{
 		if(__sync_val_compare_and_swap(&(lock->reader_locks[local_thread_id].counter), 0, 1) == 0){ \
 			break; \
 		}\
-		START_TRANSACTION();\
 	} \
+	START_TRANSACTION();\
 }; \
 
 # define RELEASE_READ_LOCK(lock) lock->reader_locks[local_thread_id].counter = 0; statistics_array[local_thread_id].lock_commits++; END_RDTSC_R();\
